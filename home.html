@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home — JAWHAR Official Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1b2f86; --navy-d:#14215f; --ink:#141a3a; --blue:#2b45b0;
+    --purple:#5b2c83; --plum:#7a1f5c; --pink:#d94fae; --magenta:#9c2463;
+    --muted:#6b7392; --line:#e7e9f3; --soft:#f3f4fa; --white:#fff;
+    --radius:20px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  h1,h2,h3,.nav,.btn,.font-p{font-family:'Poppins',sans-serif}
+  .wrap{width:min(1180px,calc(100% - 48px));margin:0 auto}
+  .eyebrow{font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--magenta)}
+  .eyebrow.blue{color:var(--blue)}
+  .h2{font-size:clamp(30px,3.6vw,46px);font-weight:600;letter-spacing:-.025em;line-height:1.08;margin-top:10px}
+  .link-line{font-family:'Poppins';font-size:14px;font-weight:500;display:inline-flex;gap:10px;align-items:center;padding-bottom:6px;border-bottom:1.5px solid var(--ink);transition:.2s}
+  .link-line:hover{gap:16px;color:var(--magenta);border-color:var(--magenta)}
+  svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+  /* ================= UTILITY BAR ================= */
+  .util{background:var(--navy);color:#fff;height:48px}
+  .util .wrap{display:flex;justify-content:space-between;align-items:center;height:100%}
+  .util-l{display:flex;gap:20px}
+  .util-l a{opacity:.85;display:flex}.util-l a:hover{opacity:1}
+  .util-r{display:flex;gap:14px;align-items:center}
+  .lang{display:flex;background:rgba(255,255,255,.12);border-radius:6px;overflow:hidden;font-size:11px;font-weight:600}
+  .lang button{border:0;background:none;color:#cfd6f5;padding:6px 11px;cursor:pointer;font:inherit}
+  .lang button.on{background:#f5c518;color:var(--ink)}
+
+  /* ================= HEADER / NAV ================= */
+  .header{position:absolute;top:60px;left:0;right:0;z-index:50}
+  .bar{position:relative;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-radius:999px;height:64px;padding:0 10px 0 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 10px 30px rgba(10,20,70,.18)}
+  .brand{display:flex;align-items:center;gap:10px;flex:none;max-width:250px;overflow:hidden;white-space:nowrap;font-size:12px;color:var(--navy)}
+  .brand img{height:56px;width:auto}
+  .nav{display:flex;gap:2px;list-style:none}
+  .nav>li>a,.nav>li>button{display:flex;align-items:center;gap:6px;height:40px;padding:0 13px;border-radius:999px;font-size:14px;white-space:nowrap;font-weight:500;color:#3a4160;background:none;border:0;cursor:pointer;font-family:inherit;transition:.2s}
+  .nav>li>button .chev{width:10px;height:10px;stroke-width:2.2;transition:transform .25s;opacity:.6}
+  .nav>li>a.active{background:var(--navy);color:#fff}
+  .nav>li:hover>button,.nav>li.open>button{background:var(--soft);color:var(--navy)}
+  .nav>li.open>button .chev{transform:rotate(180deg)}
+  .search{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;color:#59607d;cursor:pointer}
+  .burger{display:none}
+
+  /* ================= NEW SUBMENU STYLE: "split panel" =================
+     Floating panel under the pill nav: a gradient story column on the left,
+     numbered index links on the right. */
+  .panel{position:absolute;left:0;right:0;top:calc(100% + 12px);background:#fff;border-radius:26px;box-shadow:0 30px 70px rgba(15,25,80,.25);display:grid;grid-template-columns:300px 1fr;overflow:hidden;
+    opacity:0;visibility:hidden;transform:translateY(-8px) scale(.99);transform-origin:top center;transition:opacity .22s,transform .22s,visibility .22s}
+  .panel::before{content:"";position:absolute;left:0;right:0;top:-14px;height:14px} /* hover bridge */
+  .nav>li.open .panel{opacity:1;visibility:visible;transform:none}
+  .story{position:relative;padding:30px 28px;color:#fff;background:linear-gradient(155deg,var(--navy) 0%,var(--purple) 60%,var(--plum) 100%);display:flex;flex-direction:column;overflow:hidden}
+  .story .tag{font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:#f3b6dd}
+  .story h4{font-family:'Poppins';font-size:22px;font-weight:600;line-height:1.2;margin-top:12px;letter-spacing:-.01em}
+  .story p{font-size:13px;line-height:1.6;color:#d9dcf3;margin-top:10px}
+  .story .cta{margin-top:auto;padding-top:22px;display:inline-flex;align-items:center;gap:10px;font-family:'Poppins';font-size:13px;font-weight:500}
+  .story .cta span{width:34px;height:34px;border-radius:50%;background:#fff;color:var(--purple);display:grid;place-items:center;transition:transform .2s}
+  .story .cta:hover span{transform:translateX(4px)}
+  .story .thumb{border-radius:14px;overflow:hidden;margin-top:16px;aspect-ratio:16/9}
+  .story .thumb img{width:100%;height:100%;object-fit:cover}
+
+  .index{padding:26px 28px 24px;display:flex;flex-direction:column;gap:18px}
+  .grp-title{display:flex;align-items:center;gap:12px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+  .grp-title::after{content:"";flex:1;height:1px;background:var(--line)}
+  .links{display:grid;grid-template-columns:repeat(3,1fr);gap:2px 10px;list-style:none;counter-reset:n}
+  .links.c2{grid-template-columns:repeat(2,1fr)}
+  .links a{position:relative;display:grid;grid-template-columns:28px 1fr 16px;align-items:start;gap:6px;padding:10px 10px;border-radius:12px;transition:background .18s}
+  .links a::before{counter-increment:n;content:counter(n,decimal-leading-zero);font-family:'Poppins';font-size:11px;font-weight:600;color:#b8bdd6;padding-top:2px;transition:color .18s}
+  .links b{display:block;font-family:'Poppins';font-weight:500;font-size:13.5px;color:var(--ink);line-height:1.3}
+  .links small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+  .links .arr{opacity:0;transform:translateX(-6px);transition:.18s;color:var(--magenta);width:16px;height:16px;margin-top:2px}
+  .links a:hover{background:var(--soft)}
+  .links a:hover::before{color:var(--magenta)}
+  .links a:hover .arr{opacity:1;transform:none}
+  /* pillar mini cards inside Core Business */
+  .pills3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .pill{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:16/8;color:#fff;display:flex;align-items:flex-end;padding:12px}
+  .pill img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .4s}
+  .pill::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(20,20,70,.85))}
+  .pill.z::after{background:linear-gradient(180deg,transparent 20%,rgba(91,44,131,.9))}
+  .pill.h::after{background:linear-gradient(180deg,transparent 20%,rgba(122,31,92,.9))}
+  .pill div{position:relative;z-index:1}
+  .pill b{font-family:'Poppins';font-weight:600;font-size:15px;display:block}
+  .pill small{font-size:11.5px;opacity:.85}
+  .pill:hover img{transform:scale(1.06)}
+  /* chip grid for staff systems */
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips a{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;padding:7px 14px 7px 8px;font-size:12.5px;transition:.18s}
+  .chips a i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--soft);display:grid;place-items:center;font-size:10px;font-weight:700;color:var(--navy);font-family:'Poppins'}
+  .chips a span{color:var(--muted)}
+  .chips a:hover{border-color:var(--purple);background:#faf6fd}
+  .index-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px dashed var(--line);font-size:12px;color:var(--muted)}
+  .index-foot a{color:var(--navy);font-weight:600}
+
+  /* ================= HERO ================= */
+  .hero{position:relative;height:630px;color:#fff;overflow:hidden;
+    background:#1b2450 url("assets/img/hero.jpg") right center/cover no-repeat}
+  .hero::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(26,34,78,.75) 0%,rgba(26,34,78,.35) 45%,rgba(26,34,78,0) 75%)}
+  .hero::after{content:"";position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(transparent,rgba(48,40,110,.55))}
+  .hero .wrap{position:relative;z-index:1;padding-top:198px}
+  .hero h1{font-size:clamp(40px,4.6vw,66px);font-weight:600;line-height:1.12;letter-spacing:-.03em;max-width:640px}
+  .hero h1 em{font-style:normal;color:var(--pink)}
+  .actions{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:54px;padding:0 24px;min-width:204px;border-radius:999px;font-size:15px;font-weight:500;transition:.2s}
+  .btn-w{background:#fff;color:var(--plum)}
+  .btn-w:hover{background:#ffe9f6}
+  .btn-o{min-width:174px;border:1.5px solid rgba(255,255,255,.75);color:#fff}
+  .btn-o:hover{background:rgba(255,255,255,.12)}
+
+  /* ================= NEWS ================= */
+  section{padding:72px 0}
+  .head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:36px}
+  .news{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+  .news article .img{aspect-ratio:4/3;overflow:hidden;border-radius:6px;background:var(--soft)}
+  .news article img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+  .news article:hover img{transform:scale(1.05)}
+  .news .cat{margin-top:22px;font-size:11px;letter-spacing:.14em;font-weight:600;color:var(--magenta)}
+  .news h3{font-size:20px;font-weight:500;line-height:1.35;margin-top:10px;letter-spacing:-.01em}
+  .news article:hover h3{color:var(--navy)}
+  .news .meta{font-size:13px;color:#9aa0b8;margin-top:10px}
+
+  /* ================= SERVICES ================= */
+  .services{background:var(--soft)}
+  .svc{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;padding:0 10px}
+  .svc a{background:#fff;border-radius:18px;padding:24px 22px 22px;min-height:164px;display:flex;flex-direction:column;transition:.25s;border:1px solid transparent}
+  .svc a:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(30,40,110,.1);border-color:var(--line)}
+  .svc .ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:#eef0fb;color:var(--navy)}
+  .svc .ic.p{background:#f4eefa;color:var(--purple)}
+  .svc .ic.m{background:#fbeef4;color:var(--magenta)}
+  .svc b{font-family:'Poppins';font-weight:500;font-size:15px;margin-top:auto;padding-top:28px}
+  .svc small{font-size:12px;color:#9aa0b8;margin-top:3px}
+
+  /* ================= PILLARS ================= */
+  .pillars-head{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:36px}
+  .pillars-head p{max-width:300px;font-size:13.5px;line-height:1.65;color:var(--muted)}
+  .pillars{display:flex;gap:15px;height:490px}
+  .pl{position:relative;flex:1;border-radius:26px;overflow:hidden;color:#fff;cursor:pointer;transition:flex .55s cubic-bezier(.2,.8,.2,1)}
+  .pl.on{flex:2.2}
+  .pl:not(.on){flex:1}
+  .pl img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top}
+  .pl::after{content:"";position:absolute;inset:0}
+  .pl.w::after{background:linear-gradient(180deg,rgba(27,47,134,.05) 20%,rgba(27,47,134,.92))}
+  .pl.z::after{background:linear-gradient(180deg,rgba(91,44,131,.15) 20%,rgba(91,44,131,.92))}
+  .pl.h::after{background:linear-gradient(180deg,rgba(122,31,92,.1) 20%,rgba(122,31,92,.92))}
+  .pl .tx{position:absolute;left:28px;right:28px;bottom:30px;z-index:1}
+  .pl .no{font-size:12px;font-weight:600;opacity:.8}
+  .pl h3{font-size:32px;font-weight:600;letter-spacing:-.02em;margin-top:4px;white-space:nowrap}
+  .pl .more{max-height:0;opacity:0;overflow:hidden;transition:max-height .5s,opacity .4s}
+  .pl.on .more{max-height:200px;opacity:1}
+  .pl .more p{font-size:14px;line-height:1.6;opacity:.9;margin-top:10px;max-width:440px}
+  .pl .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .pl .tags a{font-size:12px;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.18);backdrop-filter:blur(4px)}
+  .pl .tags a:hover{background:#fff;color:var(--navy)}
+
+  /* ================= PARTNERS ================= */
+  .partners{padding:24px 0 34px;background:#f7f8fb}
+  .tabs{display:flex;justify-content:center}
+  .tabs div{background:#eef1fb;border-radius:999px;padding:5px;display:flex}
+  .tabs button{border:0;background:none;padding:12px 22px;border-radius:999px;font-family:'Poppins';font-size:14px;font-weight:500;color:var(--ink);cursor:pointer}
+  .tabs button.on{background:#fff;color:var(--navy);box-shadow:0 2px 10px rgba(30,40,110,.08)}
+  .logos{display:none;flex-wrap:wrap;justify-content:center;gap:28px 37px;margin-top:44px}
+  .logos.on{display:flex}
+  .logos a{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11px;color:#9aa0b8}
+  .logos img{height:27px;width:auto;transition:.25s}
+  .logos a:hover img{transform:translateY(-3px)}
+  .logos a:hover{color:var(--ink)}
+  .agency{height:46px;padding:0 20px;border:1px solid var(--line);border-radius:12px;display:grid;place-items:center;font-family:'Poppins';font-weight:600;font-size:13px;color:#8d93ad;background:#fff;transition:.2s}
+  .logos a:hover .agency{color:var(--navy);border-color:var(--navy)}
+
+  /* ================= CTA + FOOTER ================= */
+  .foot{background:linear-gradient(170deg,#602b7b 0%,#6b2672 50%,#78204f 100%);color:#fff}
+  .cta-band{display:flex;justify-content:space-between;align-items:center;gap:30px;padding:70px 0 60px;border-bottom:1px solid rgba(255,255,255,.18)}
+  .cta-band h2{font-size:clamp(30px,3.6vw,46px);font-weight:600;letter-spacing:-.025em;line-height:1.08}
+  .btn-cta{background:#fff;color:var(--plum);border-radius:6px;height:52px;padding:0 24px;font-size:14px}
+  .btn-cta:hover{gap:16px}
+  .cols{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;padding:50px 0}
+  .cols h5{font-family:'Poppins';font-size:12px;letter-spacing:.16em;font-weight:600;margin-bottom:18px}
+  .cols .org{font-family:'Poppins';font-size:14px;font-weight:500;letter-spacing:0}
+  .cols p,.cols li{font-size:13.5px;line-height:1.7;color:#e6d9ee}
+  .cols ul{list-style:none;display:grid;gap:10px}
+  .cols li a:hover{color:#fff;text-decoration:underline}
+  .soc{display:flex;gap:10px;margin-top:22px}
+  .soc a{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.4);display:grid;place-items:center}
+  .soc a:hover{background:#fff;color:var(--plum)}
+  .soc svg{width:16px;height:16px}
+  .legal{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;padding:26px 0 34px;border-top:1px solid rgba(255,255,255,.18);font-size:12.5px;color:#e6d9ee}
+  .legal nav{display:flex;gap:22px}
+
+  /* ================= RESPONSIVE ================= */
+  @media (max-width:1100px){
+    .nav,.search{display:none}
+    .burger{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:0;background:var(--navy);color:#fff;cursor:pointer}
+    .header.mobile-open .nav{display:flex;flex-direction:column;position:absolute;top:calc(100% + 10px);left:0;right:0;background:#fff;border-radius:22px;padding:10px;box-shadow:0 30px 60px rgba(15,25,80,.25);max-height:75vh;overflow:auto}
+    .header.mobile-open .nav>li>a,.header.mobile-open .nav>li>button{width:100%;justify-content:space-between;border-radius:12px}
+    .panel{position:static;display:none;grid-template-columns:1fr;box-shadow:none;border-radius:16px;opacity:1;visibility:visible;transform:none;background:var(--soft)}
+    .nav>li.open .panel{display:grid}
+    .story{display:none}
+    .index{padding:12px}
+    .links,.links.c2,.pills3{grid-template-columns:1fr}
+    .svc{grid-template-columns:repeat(3,1fr)}
+    .cols{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:760px){
+    .news{grid-template-columns:1fr}
+    .svc{grid-template-columns:repeat(2,1fr)}
+    .pillars{flex-direction:column;height:auto}
+    .pl{height:200px;flex:none!important}.pl.on{height:340px}
+    .head,.pillars-head,.cta-band{flex-direction:column;align-items:flex-start}
+    .cols{grid-template-columns:1fr}
+    .hero{height:560px}.hero .wrap{padding-top:180px}
+    .util-l{gap:14px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= UTILITY BAR ================= -->
+<div class="util">
+  <div class="wrap">
+    <nav class="util-l" aria-label="Utility">
+      <a href="#" title="FAQ"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="3"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.4M12 15.5h.01"/></svg></a>
+      <a href="#" title="Contact Us"><svg class="i" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg></a>
+      <a href="#" title="Complaints / Feedback"><svg class="i" viewBox="0 0 24 24"><path d="M4 4h16v11H9l-5 4z"/><path d="M8 8.5h8M8 11.5h5"/></svg></a>
+      <a href="#" title="Sitemap"><svg class="i" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-2h12v2"/></svg></a>
+    </nav>
+    <div class="util-r">
+      <a href="#" title="Accessibility"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="4" r="1.6"/><path d="M11 7v6h5l2 6M11 10h5M8.5 10.5A5.5 5.5 0 1 0 15 18"/></svg></a>
+      <div class="lang"><button class="on">EN</button><button>BM</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= HEADER ================= -->
+<header class="header" id="hdr">
+  <div class="wrap">
+    <div class="bar">
+      <a class="brand" href="index.html" title="Back to landing page">
+        <img src="assets/img/logo.png" alt="JAWHAR — Department of Awqaf, Zakat and Hajj">
+      </a>
+
+      <ul class="nav" id="nav">
+        <li><a class="active" href="home.html">Home</a></li>
+
+        <!-- Corporate Info -->
+        <li>
+          <button aria-expanded="false">Corporate Info</button>
+          <div class="panel">
+            <aside class="story">
+              <span class="tag">Corporate Info</span>
+              <h4>Getting to know the Department of Awqaf, Zakat and Hajj</h4>
+              <p>Who we are, what guides us and how the department is organised to serve the ummah.</p>
+              <a class="cta" href="#">JAWHAR Profile <span><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+            </aside>
+            <div class="index">
+              <div class="grp-title">About JAWHAR</div>
+              <ul class="links">
+                <li><a href="#"><span><b>Director General's Foreword</b><small>A message from the DG</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Vision, Mission &amp; Objective</b><small>What guides our work</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>History of JAWHAR</b><small>How the department began</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>JAWHAR Profile</b><small>Roles and functions</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Chief Information Officer</b><small>CIO of JAWHAR</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>JAWHAR Division</b><small>Divisions and units</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Organisation Chart</b><small>Leadership structure</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Client's Charter</b><small>Our service commitments</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Client's Charter Achievement</b><small>Performance against the charter</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Joint Departmental Council</b><small>Majlis Bersama Jabatan</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Protection Security Policy</b><small>PDF document</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+
+        <!-- Core Business -->
+        <li>
+          <button aria-expanded="false">Core Business</button>
+          <div class="panel">
+            <aside class="story">
+              <span class="tag">Core Business</span>
+              <h4>Three pillars, one mission for the ummah</h4>
+              <p>We work with State Islamic Religious Councils and agencies to raise standards in waqf, zakat and hajj nationwide.</p>
+              <a class="cta" href="#">Explore <span><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+            </aside>
+            <div class="index">
+              <div class="grp-title">Pillars</div>
+              <div class="pills3">
+                <a class="pill" href="#"><img src="assets/img/pillar-waqf.jpg" alt=""><div><b>Waqf</b><small>Developing waqf assets</small></div></a>
+                <a class="pill z" href="#"><img src="assets/img/pillar-zakat.jpg" alt=""><div><b>Zakat &amp; Mal</b><small>Zakat and baitulmal</small></div></a>
+                <a class="pill h" href="#"><img src="assets/img/pillar-hajj.jpg" alt=""><div><b>Hajj &amp; Umrah</b><small>Pilgrim regulation and oversight</small></div></a>
+              </div>
+              <div class="grp-title">Agencies</div>
+              <ul class="links">
+                <li><a href="#"><span><b>State Islamic Religious Council</b><small>MAIN</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Zakat Management Agencies</b><small>AMZ</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Mal Management Agency</b><small>Baitulmal agencies</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Waqf Management Agencies</b><small>Waqf institutions</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Agencies under PMD</b><small>Religious Affairs</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Other Agencies</b><small>Related bodies</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+
+        <!-- Public -->
+        <li>
+          <button aria-expanded="false">Public</button>
+          <div class="panel">
+            <aside class="story">
+              <span class="tag">For the public</span>
+              <h4>Information, references and procurement in one place</h4>
+              <p>Check licensed umrah agencies, today's gold price for nisab, waqf hotels and current tenders.</p>
+              <a class="cta" href="#">All public services <span><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+            </aside>
+            <div class="index">
+              <div class="grp-title">Public information</div>
+              <ul class="links">
+                <li><a href="#"><span><b>Umrah Agency Status</b><small>Check a licensed agency</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Gold Market Price</b><small>For zakat nisab</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>List of Waqf Hotels</b><small>Hotels on waqf land</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Salary Deduction Form</b><small>Public sector waqf deduction</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>myGovernment Portal</b><small>Malaysian government services</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+              </ul>
+              <div class="grp-title">Publications &amp; procurement</div>
+              <ul class="links c2">
+                <li><a href="#"><span><b>JAWHAR Journal</b><small>Research and publications</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Manuals &amp; Guidelines</b><small>e-Publication</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Quotation / Tender Notice</b><small>Current procurement</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Quotation / Tender Result</b><small>Awarded contracts</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+
+        <!-- e-Services -->
+        <li>
+          <button aria-expanded="false">e-Services</button>
+          <div class="panel">
+            <aside class="story">
+              <span class="tag">Online service</span>
+              <h4>Work out your zakat obligation in minutes</h4>
+              <p>Enter your income and savings, and the calculator applies the current nisab for you.</p>
+              <a class="cta" href="#">Zakat Calculator <span><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+            </aside>
+            <div class="index">
+              <div class="grp-title">Online services</div>
+              <ul class="links c2">
+                <li><a href="#"><span><b>Online Waqf</b><small>Contribute cash waqf</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Zakat Calculator</b><small>Calculate your zakat</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Khairat Collection</b><small>Charity collection with permission</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Hajj Registration</b><small>Via THiJARI</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Public Complaints</b><small>SiSPAA</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Insight</b><small>Data and dashboards</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+              </ul>
+              <div class="index-foot"><span>Need help with an online service?</span><a href="#">Contact the helpdesk →</a></div>
+            </div>
+          </div>
+        </li>
+
+        <!-- Media -->
+        <li>
+          <button aria-expanded="false">Media</button>
+          <div class="panel">
+            <aside class="story">
+              <span class="tag">Featured</span>
+              <h4>The enduring contribution of Tun Abdullah Ahmad Badawi</h4>
+              <div class="thumb"><img src="assets/img/pillar-waqf.jpg" alt=""></div>
+              <a class="cta" href="#">Read more <span><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+            </aside>
+            <div class="index">
+              <div class="grp-title">Media centre</div>
+              <ul class="links">
+                <li><a href="#"><span><b>Announcements</b><small>Latest news from JAWHAR</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Infographics &amp; Videos</b><small>Hajj and umrah guides</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Activity @ JAWHAR</b><small>From our social media</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Open Data</b><small>Public datasets</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Insight</b><small>Data and dashboards</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>FAQs</b><small>Common questions</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+                <li><a href="#"><span><b>Contact Us</b><small>Address and phone lines</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+
+        <!-- Directory -->
+        <li>
+          <button aria-expanded="false">Directory</button>
+          <div class="panel">
+            <aside class="story">
+              <span class="tag">Directory</span>
+              <h4>Find the right officer and division</h4>
+              <p>Search the staff contact list by name, division or unit.</p>
+              <a class="cta" href="#">JAWHAR Directory <span><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+            </aside>
+            <div class="index">
+              <div class="grp-title">Directory</div>
+              <ul class="links c2">
+                <li><a href="#"><span><b>JAWHAR Directory</b><small>Staff contact list</small></span><svg class="i arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+              </ul>
+              <div class="grp-title">JAWHAR staff systems</div>
+              <div class="chips">
+                <a href="#"><i>Mg</i>MyGovUC <span>· Government email</span></a>
+                <a href="#"><i>Sp</i>Spot-Me <span>· MAMPU</span></a>
+                <a href="#"><i>Hr</i>HRMIS <span>· Human resources</span></a>
+                <a href="#"><i>Sa</i>SPPA <span>· Treasury system</span></a>
+                <a href="#"><i>eP</i>e-Penyata Gaji <span>· Salary statement</span></a>
+                <a href="#"><i>iG</i>iGFMAS <span>· Financial management</span></a>
+                <a href="#"><i>eP</i>e-Perolehan <span>· Procurement</span></a>
+                <a href="#"><i>Si</i>SiSPAA <span>· Complaints management</span></a>
+                <a href="#"><i>Cl</i>Click <span>· Vroom &amp; Meet-Me</span></a>
+                <a href="#"><i>C2</i>ClickV2 <span>· Help-Me</span></a>
+              </div>
+              <div class="index-foot"><span>Staff systems need a JAWHAR login.</span><a href="index.html">Intranet Portal →</a></div>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <div style="display:flex;gap:8px">
+        <button class="search" aria-label="Search"><svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+        <button class="burger" id="burger" aria-label="Menu"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" style="padding:0">
+  <div class="wrap">
+    <h1>Managing ummah wealth with <em>trust and purpose.</em></h1>
+    <div class="actions">
+      <a class="btn btn-w" href="#">Give Waqf Online</a>
+      <a class="btn btn-o" href="#">Zakat Calculator</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NEWS ================= -->
+<section>
+  <div class="wrap">
+    <div class="head">
+      <div><span class="eyebrow">Media &amp; Announcements</span><h2 class="h2">What's happening.</h2></div>
+      <a class="link-line" href="#">View all news <span>→</span></a>
+    </div>
+    <div class="news">
+      <article><a href="#">
+        <div class="img"><img src="assets/img/news-1.jpg" alt=""></div>
+        <p class="cat">FEATURE</p>
+        <h3>The enduring contribution of Tun Abdullah Ahmad Badawi to waqf and zakat</h3>
+        <p class="meta">October 2026</p>
+      </a></article>
+      <article><a href="#">
+        <div class="img"><img src="assets/img/news-2.jpg" alt=""></div>
+        <p class="cat">WAQF</p>
+        <h3>Giving hope, lighting lives: the case for cash waqf</h3>
+        <p class="meta">Campaign</p>
+      </a></article>
+      <article><a href="#">
+        <div class="img"><img src="assets/img/news-3.jpg" alt=""></div>
+        <p class="cat">UMRAH</p>
+        <h3>A guide to submitting umrah complaints online</h3>
+        <p class="meta">Infographic</p>
+      </a></article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DIGITAL SERVICES ================= -->
+<section class="services">
+  <div class="wrap">
+    <div class="head">
+      <div><span class="eyebrow blue">Digital Services</span><h2 class="h2">Everything you need,<br>one tap away.</h2></div>
+      <a class="link-line" href="#">All public services <span>→</span></a>
+    </div>
+    <div class="svc">
+      <a href="#"><span class="ic"><svg class="i" viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="2"/><rect x="8" y="5.5" width="8" height="3.5"/><path d="M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 16.5h.01M12 16.5h.01M15.5 16.5h.01"/></svg></span><b>Zakat Calculator</b><small>Work out what you owe</small></a>
+      <a href="#"><span class="ic p"><svg class="i" viewBox="0 0 24 24"><path d="M19.5 12.6L12 20l-7.5-7.4A5 5 0 1 1 12 6a5 5 0 1 1 7.5 6.6z"/></svg></span><b>Online Waqf</b><small>Give cash waqf</small></a>
+      <a href="#"><span class="ic m"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="9" r="6"/><path d="M18 10a6 6 0 1 1-8 8"/><path d="M8 7.5h2M8 10.5h2"/></svg></span><b>Gold Market Price</b><small>Daily nisab reference</small></a>
+      <a href="#"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><b>Khairat Collection</b><small>Charity permits</small></a>
+      <a href="#"><span class="ic p"><svg class="i" viewBox="0 0 24 24"><path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 21h18"/></svg></span><b>Baitulmal</b><small>Mal management</small></a>
+      <a href="#"><span class="ic m"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V4M4 20h16M8 16v-5M12 16V8M16 16v-3"/></svg></span><b>Insight</b><small>Data &amp; dashboards</small></a>
+      <a href="#"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.5 3 5v13c4-.5 7 0 9 1.5 2-1.5 5-2 9-1.5V5c-4-.5-7 0-9 1.5zM12 6.5v13"/></svg></span><b>JAWHAR Journal</b><small>Research publication</small></a>
+      <a href="#"><span class="ic p"><svg class="i" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/></svg></span><b>e-Publication</b><small>Manuals &amp; guidelines</small></a>
+      <a href="#"><span class="ic m"><svg class="i" viewBox="0 0 24 24"><path d="M3 19V7M3 15h18v4M21 15v-3a3 3 0 0 0-3-3h-8v6"/><circle cx="6.5" cy="11.5" r="1.5"/></svg></span><b>Waqf Hotels</b><small>Stay with purpose</small></a>
+      <a href="#"><span class="ic"><svg class="i" viewBox="0 0 24 24"><ellipse cx="12" cy="5.5" rx="7" ry="2.5"/><path d="M5 5.5v13c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-13M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5"/></svg></span><b>Open Data</b><small>Public datasets</small></a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CORE BUSINESS ================= -->
+<section class="services" style="padding-top:20px">
+  <div class="wrap">
+    <div class="pillars-head">
+      <div><span class="eyebrow blue">JAWHAR Core Business</span><h2 class="h2">Three trusts. One mission.</h2></div>
+      <p>Hover each pillar to explore. We work with State Islamic Religious Councils and agencies to raise standards nationwide.</p>
+    </div>
+    <div class="pillars" id="pillars">
+      <div class="pl w on">
+        <img src="assets/img/pillar-waqf.jpg" alt="">
+        <div class="tx"><span class="no">01</span><h3>Waqf</h3>
+          <div class="more"><p>Developing waqf assets into lasting benefit for education, health and the economy.</p>
+            <div class="tags"><a href="#">Online waqf</a><a href="#">Waqf hotels</a><a href="#">Waqf institutions</a></div></div></div>
+      </div>
+      <div class="pl z">
+        <img src="assets/img/pillar-zakat.jpg" alt="">
+        <div class="tx"><span class="no">02</span><h3>Zakat &amp; Mal</h3>
+          <div class="more"><p>Coordinating zakat collection and baitulmal management with state agencies.</p>
+            <div class="tags"><a href="#">Zakat calculator</a><a href="#">Gold price</a><a href="#">Baitulmal</a></div></div></div>
+      </div>
+      <div class="pl h">
+        <img src="assets/img/pillar-hajj.jpg" alt="">
+        <div class="tx"><span class="no">03</span><h3>Hajj &amp; Umrah</h3>
+          <div class="more"><p>Regulating and overseeing hajj and umrah so every pilgrim travels with peace of mind.</p>
+            <div class="tags"><a href="#">Hajj registration</a><a href="#">Umrah agency status</a></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PARTNERS ================= -->
+<section class="partners">
+  <div class="wrap">
+    <div class="tabs"><div>
+      <button class="on" data-tab="main">State Islamic Religious Councils</button>
+      <button data-tab="agency">Related Agencies</button>
+    </div></div>
+    <div class="logos on" id="main">
+      <a href="#"><img src="assets/flags/council-01.png" alt="State Islamic Religious Council 1"></a>
+      <a href="#"><img src="assets/flags/council-02.png" alt="State Islamic Religious Council 2"></a>
+      <a href="#"><img src="assets/flags/council-03.png" alt="State Islamic Religious Council 3"></a>
+      <a href="#"><img src="assets/flags/council-04.png" alt="State Islamic Religious Council 4"></a>
+      <a href="#"><img src="assets/flags/council-05.png" alt="State Islamic Religious Council 5"></a>
+      <a href="#"><img src="assets/flags/council-06.png" alt="State Islamic Religious Council 6"></a>
+      <a href="#"><img src="assets/flags/council-07.png" alt="State Islamic Religious Council 7"></a>
+      <a href="#"><img src="assets/flags/council-08.png" alt="State Islamic Religious Council 8"></a>
+      <a href="#"><img src="assets/flags/council-09.png" alt="State Islamic Religious Council 9"></a>
+      <a href="#"><img src="assets/flags/council-10.png" alt="State Islamic Religious Council 10"></a>
+      <a href="#"><img src="assets/flags/council-11.png" alt="State Islamic Religious Council 11"></a>
+      <a href="#"><img src="assets/flags/council-12.png" alt="State Islamic Religious Council 12"></a>
+      <a href="#"><img src="assets/flags/council-13.png" alt="State Islamic Religious Council 13"></a>
+    </div>
+    <div class="logos" id="agency">
+      <a href="#"><span class="agency">Yayasan Waqaf Malaysia</span></a>
+      <a href="#"><span class="agency">Tabung Haji</span></a>
+      <a href="#"><span class="agency">JAKIM</span></a>
+      <a href="#"><span class="agency">BHEUU</span></a>
+      <a href="#"><span class="agency">MAIWP</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA + FOOTER ================= -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Every waqf leaves a legacy<br>that outlives us.</h2>
+      <a class="btn btn-cta" href="#">Contribute waqf <span>→</span></a>
+    </div>
+    <div class="cols">
+      <div>
+        <h5 class="org">Department of Awqaf, Zakat &amp; Hajj</h5>
+        <p>Aras 8–9, Blok D, Kompleks Islam Putrajaya (KIP),<br>Jalan Tun Abdul Razak, Presint 3,<br>62100 Putrajaya, Malaysia</p>
+        <div class="soc">
+          <a href="#" aria-label="Facebook"><svg class="i" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="#" aria-label="X"><svg class="i" viewBox="0 0 24 24"><path d="M4 4l16 16M20 4L4 20"/></svg></a>
+          <a href="#" aria-label="Instagram"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg></a>
+          <a href="#" aria-label="YouTube"><svg class="i" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z"/></svg></a>
+        </div>
+      </div>
+      <div><h5>CORPORATE</h5><ul><li><a href="#">History</a></li><li><a href="#">Organisation chart</a></li><li><a href="#">Client's charter</a></li><li><a href="#">Directory</a></li></ul></div>
+      <div><h5>PUBLIC</h5><ul><li><a href="#">Tender notice</a></li><li><a href="#">Tender result</a></li><li><a href="#">Salary deduction form</a></li><li><a href="#">myGovernment</a></li></ul></div>
+      <div><h5>CONTACT</h5><ul><li>+603-8883 7400</li><li>+603-8883 7406</li><li><a href="mailto:pejabatam@jawhar.gov.my">pejabatam@jawhar.gov.my</a></li></ul></div>
+    </div>
+    <div class="legal">
+      <span>© 2026 Department of Awqaf, Zakat &amp; Hajj (JAWHAR) · Last updated 20 Oct 2026</span>
+      <nav><a href="#">Disclaimer</a><a href="#">Privacy</a><a href="#">Security</a><a href="#">e-Participation</a></nav>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ---- Submenu: hover on desktop, click on touch / mobile ----
+  const items = document.querySelectorAll('#nav > li');
+  const desktop = () => window.matchMedia('(min-width:1101px)').matches;
+  let t;
+  const closeAll = except => items.forEach(li => { if (li !== except) { li.classList.remove('open'); const b = li.querySelector('button'); b && b.setAttribute('aria-expanded','false'); } });
+  items.forEach(li => {
+    const btn = li.querySelector('button'); if (!btn) return;
+    li.addEventListener('mouseenter', () => { if (!desktop()) return; clearTimeout(t); closeAll(li); li.classList.add('open'); btn.setAttribute('aria-expanded','true'); });
+    li.addEventListener('mouseleave', () => { if (!desktop()) return; t = setTimeout(() => { li.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }, 150); });
+    btn.addEventListener('click', () => { const open = !li.classList.contains('open'); closeAll(li); li.classList.toggle('open', open); btn.setAttribute('aria-expanded', open); });
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+  document.addEventListener('click', e => { if (!e.target.closest('#hdr')) closeAll(); });
+  document.getElementById('burger').addEventListener('click', () => document.getElementById('hdr').classList.toggle('mobile-open'));
+
+  // ---- Pillars: expand on hover / tap ----
+  document.querySelectorAll('.pl').forEach(p => {
+    const on = () => { document.querySelectorAll('.pl').forEach(x => x.classList.remove('on')); p.classList.add('on'); };
+    p.addEventListener('mouseenter', on); p.addEventListener('click', on);
+  });
+
+  // ---- Partner tabs ----
+  document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach(x => x.classList.remove('on')); b.classList.add('on');
+    document.querySelectorAll('.logos').forEach(l => l.classList.toggle('on', l.id === b.dataset.tab));
+  }));
+
+  // ---- Language toggle (visual only) ----
+  document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => {
+    b.parentElement.querySelectorAll('button').forEach(x => x.classList.remove('on')); b.classList.add('on');
+  }));
+</script>
+</body>
+</html>
